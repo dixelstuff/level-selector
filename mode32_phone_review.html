@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FlipWords phone review</title>
+<style>
+  :root{--bg:#faf9ff;--card:#fff;--ink:#22223a;--muted:#6f6b80;--line:#e3dff3;--purple:#8c52ff;--soft:#f0ebff;--bad:#ffe8ec;--ok:#e8f5ee;}
+  *{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);}
+  .wrap{max-width:620px;margin:0 auto;padding:14px 13px 26px;}
+  .top{position:sticky;top:0;z-index:5;background:rgba(250,249,255,.94);backdrop-filter:blur(10px);padding:10px 0 8px;border-bottom:1px solid var(--line);}
+  .bar{display:flex;gap:8px;align-items:center;justify-content:space-between;font-size:13px;color:var(--muted)}
+  .pill{border:1px solid var(--line);border-radius:999px;padding:5px 9px;background:white}
+  .card{margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 16px;box-shadow:0 5px 18px rgba(45,35,80,.06)}
+  .level{font-weight:800;font-size:19px;margin-bottom:12px}.puzzle{font-size:25px;font-weight:850;letter-spacing:.04em;line-height:1.25;margin:10px 0;text-align:center}.puzzle span{white-space:nowrap}.arrow{color:var(--purple);font-weight:900;margin:0 4px}.stats{font-size:14px;color:var(--muted);line-height:1.4;margin-top:14px}.reverse{font-size:14px;color:var(--muted);line-height:1.4;margin-top:7px}.decision{font-size:13px;color:var(--purple);font-weight:700;margin-top:8px;min-height:18px}
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}.actions button,.nav button,.tools button{font-size:16px;font-weight:750;border:1px solid var(--line);border-radius:14px;background:white;color:var(--ink);padding:13px 10px}.actions button.primary{background:var(--soft);border-color:#d7c8ff}.actions button.danger{background:var(--bad)}.actions button.ok{background:var(--ok)}
+  .nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}.nav input{min-width:0;border:1px solid var(--line);border-radius:14px;padding:12px;font-size:16px;text-align:center;background:white}.tools{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.small{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.35}.export{display:none;margin-top:14px}.export textarea{width:100%;height:230px;border:1px solid var(--line);border-radius:14px;padding:10px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}.export.show{display:block}
+  @media(max-width:380px){.puzzle{font-size:22px}.actions button{font-size:15px;padding:12px 8px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="bar"><div class="pill" id="where">Level</div><div class="pill" id="counts">0 decided</div></div>
+  </div>
+  <div class="card">
+    <div class="level" id="level"></div>
+    <div class="puzzle" id="puzzle"></div>
+    <div class="stats" id="stats"></div>
+    <div class="reverse" id="reverse"></div>
+    <div class="decision" id="decision"></div>
+    <div class="actions">
+      <button class="ok" data-action="keep">Keep</button>
+      <button data-action="flip_face">Flip face read</button>
+      <button data-action="reverse">Reverse</button>
+      <button class="danger" data-action="remove">Remove</button>
+      <button class="danger" data-action="overflow">Overflow</button>
+      <button data-action="clear">Clear decision</button>
+    </div>
+    <div class="nav">
+      <button id="backBtn">← Back</button>
+      <input id="jumpInput" inputmode="numeric" placeholder="level">
+      <button id="nextBtn">Next →</button>
+    </div>
+    <div class="tools">
+      <button id="undecidedBtn">Next undecided</button>
+      <button id="exportBtn">Export decisions</button>
+      <button id="copyBtn">Copy TSV</button>
+      <button id="clearAllBtn">Clear all</button>
+    </div>
+    <div class="small">Decisions are stored in this browser only. Export/copy the TSV, paste it into <b>mode32_phone_decisions.tsv</b> on the computer, then run Mode 33.</div>
+    <div class="export" id="exportBox"><textarea id="exportText" spellcheck="false"></textarea></div>
+  </div>
+</div>
+<script src="mode32_phone_review_data.js"></script>
+<script>
+(function(){
+  const DATA = window.FLIPWORDS_PHONE_REVIEW_DATA || {rows:[], dataKey:'missing'};
+  const rows = DATA.rows || [];
+  const keyBase = 'FW_PHONE_REVIEW_' + (DATA.dataKey || 'default');
+  const decisionsKey = keyBase + '_decisions';
+  const indexKey = keyBase + '_index';
+  let decisions = {};
+  try { decisions = JSON.parse(localStorage.getItem(decisionsKey) || '{}') || {}; } catch(e){ decisions = {}; }
+  let idx = Math.max(0, Math.min(rows.length - 1, parseInt(localStorage.getItem(indexKey) || '0',10) || 0));
+  const $ = id => document.getElementById(id);
+  function up(x){ return String(x||'?').toUpperCase(); }
+  function actionLabel(a){ return ({keep:'KEEP',flip_face:'FLIP FACE READ',reverse:'REVERSE',remove:'REMOVE',overflow:'OVERFLOW'})[a] || ''; }
+  function save(){ localStorage.setItem(decisionsKey, JSON.stringify(decisions)); localStorage.setItem(indexKey, String(idx)); }
+  function countDecided(){ return Object.keys(decisions).length; }
+  function render(){
+    if(!rows.length){ $('level').textContent='No rows loaded'; return; }
+    const r = rows[idx];
+    const d = decisions[r.id];
+    $('where').textContent = 'Level ' + r.level + ' / ' + rows.length;
+    $('counts').textContent = countDecided() + ' decided';
+    $('level').textContent = 'Level ' + r.level + ':';
+    $('puzzle').innerHTML = '<span>'+up(r.word1)+' '+up(r.word2)+'</span> <span class="arrow">›</span> <span>'+up(r.answer1)+' '+up(r.answer2)+'</span>';
+    $('stats').textContent = 'minMoves ' + r.minMoves + ' diff ' + r.difficulty + ' · uniq ' + r.uniqScore + ' (' + r.pairMax + '/' + r.pairSum + ') · ' + r.category;
+    $('reverse').textContent = r.reverse || '';
+    $('decision').textContent = d ? ('decision: ' + actionLabel(d.action)) : 'decision: —';
+    $('jumpInput').value = '';
+    save();
+  }
+  function setDecision(action){
+    const r = rows[idx];
+    if(action === 'clear') delete decisions[r.id];
+    else decisions[r.id] = {level:r.level, id:r.id, action:action, ts:new Date().toISOString()};
+    if(action !== 'clear' && idx < rows.length - 1) idx++;
+    render();
+  }
+  function nextUndecided(){
+    for(let i=idx+1;i<rows.length;i++){ if(!decisions[rows[i].id]){ idx=i; render(); return; } }
+    for(let i=0;i<=idx;i++){ if(!decisions[rows[i].id]){ idx=i; render(); return; } }
+    alert('All rows have decisions.');
+  }
+  function exportTSV(){
+    const header = 'level\tid\taction';
+    const lines = [header];
+    rows.forEach(r => { const d = decisions[r.id]; if(d) lines.push([r.level,r.id,d.action].join('\t')); });
+    const text = lines.join('\n') + '\n';
+    $('exportText').value = text;
+    $('exportBox').classList.add('show');
+    return text;
+  }
+  document.querySelectorAll('[data-action]').forEach(btn => btn.addEventListener('click', () => setDecision(btn.dataset.action)));
+  $('backBtn').addEventListener('click', () => { idx=Math.max(0,idx-1); render(); });
+  $('nextBtn').addEventListener('click', () => { idx=Math.min(rows.length-1,idx+1); render(); });
+  $('jumpInput').addEventListener('change', () => { const n=parseInt($('jumpInput').value,10); if(n>=1&&n<=rows.length){ idx=n-1; render(); }});
+  $('undecidedBtn').addEventListener('click', nextUndecided);
+  $('exportBtn').addEventListener('click', exportTSV);
+  $('copyBtn').addEventListener('click', async () => { const text=exportTSV(); try{ await navigator.clipboard.writeText(text); alert('Copied TSV'); }catch(e){ $('exportText').focus(); $('exportText').select(); }});
+  $('clearAllBtn').addEventListener('click', () => { if(confirm('Clear all phone decisions for this pack?')){ decisions={}; save(); render(); }});
+  render();
+})();
+</script>
+</body>
+</html>
