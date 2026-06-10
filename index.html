@@ -73,16 +73,30 @@
   function actionLabel(a){ return ({keep:'KEEP',flip_face:'FLIP FACE READ',reverse:'REVERSE',reverse_no_flip:'REVERSE NO FLIP',reverse_flip:'REVERSE + FLIP',remove:'REMOVE',overflow:'OVERFLOW',add_reverse_overflow:'ADD REVERSE TO OVERFLOW',add_reverse_overflow_flip:'ADD REVERSE TO OVERFLOW + FLIP CURRENT'})[a] || ''; }
   function save(){ localStorage.setItem(decisionsKey, JSON.stringify(decisions)); localStorage.setItem(indexKey, String(idx)); }
   function countDecided(){ return Object.keys(decisions).length; }
+  function findPairedDecision(r){
+    if(!r || !r.id) return null;
+    for(const id of Object.keys(decisions)){
+      const d = decisions[id] || {};
+      if(d.action !== 'reverse_no_flip' && d.action !== 'reverse_flip') continue;
+      const src = rows.find(x => x.id === id);
+      if(!src) continue;
+      if(src.reverseId === r.id || (src.reverseLevel && src.reverseLevel === r.level)){
+        return {source:src, decision:d};
+      }
+    }
+    return null;
+  }
   function render(){
     if(!rows.length){ $('level').textContent='No rows loaded'; return; }
     const r = rows[idx];
     const d = decisions[r.id];
+    const paired = (!d) ? findPairedDecision(r) : null;
     $('level').textContent = 'Level ' + r.level + ':';
     $('puzzle').innerHTML = '<span>'+up(r.word1)+' '+up(r.word2)+'</span> <span class="arrow">›</span> <span>'+up(r.answer1)+' '+up(r.answer2)+'</span>';
     $('stats').textContent = 'minMoves ' + r.minMoves + ' diff ' + r.difficulty + ' · uniq ' + r.uniqScore + ' (' + r.pairMax + '/' + r.pairSum + ') · ' + r.category;
     $('reverse').textContent = r.reverse || '';
-    $('decision').textContent = d ? ('decision: ' + actionLabel(d.action)) : 'decision: —';
-    $('hint').textContent = r.unpairedReverse ? 'unpaired reverse candidate' : '';
+    $('decision').textContent = d ? ('decision: ' + actionLabel(d.action)) : (paired ? ('paired by reverse decision at level ' + paired.source.level) : 'decision: —');
+    $('hint').textContent = paired ? 'This row is affected by an earlier/later reverse decision; clear that paired decision before making a conflicting choice here.' : (r.unpairedReverse ? 'unpaired reverse candidate' : '');
     const addBtn = $('addReverseBtn');
     const addFlipBtn = $('addReverseFlipBtn');
     // Only allow adding the reverse to overflow when it is a genuine unpaired
@@ -91,20 +105,39 @@
     const canAddReverse = !!r.unpairedReverse && r.reverseState === 'missing_available';
     [addBtn, addFlipBtn].forEach(btn => {
       if(!btn) return;
-      btn.disabled = !canAddReverse;
+      btn.disabled = !canAddReverse || !!paired;
       btn.title = canAddReverse ? 'Add the missing reverse puzzle to overflow' : 'Reverse already exists, is not allowed, or is missing clue support';
     });
+    document.querySelectorAll('[data-action]').forEach(btn => {
+      if(!paired) return;
+      const a = btn.dataset.action;
+      if(a === 'clear') return;
+      btn.disabled = true;
+      btn.title = 'Disabled because this reverse-paired row is already affected by level ' + paired.source.level;
+    });
+    if(!paired){
+      document.querySelectorAll('[data-action]').forEach(btn => {
+        if(btn.id === 'addReverseBtn' || btn.id === 'addReverseFlipBtn') return;
+        btn.disabled = false;
+        btn.title = '';
+      });
+    }
     $('jumpInput').value = '';
     save();
   }
   function setDecision(action){
     const r = rows[idx];
+    const paired = findPairedDecision(r);
+    if(action !== 'clear' && !decisions[r.id] && paired){
+      alert('This row is already affected by a reverse decision at level ' + paired.source.level + '. Clear that paired decision first if you want to change it.');
+      return;
+    }
     if((action === 'add_reverse_overflow' || action === 'add_reverse_overflow_flip') && !(r.unpairedReverse && r.reverseState === 'missing_available')){
       alert('Reverse already exists, is not allowed, or is missing clue support.');
       return;
     }
     if(action === 'clear') delete decisions[r.id];
-    else decisions[r.id] = {level:r.level, id:r.id, action:action, ts:new Date().toISOString()};
+    else decisions[r.id] = {level:r.level, id:r.id, action:action, reverseId:r.reverseId||'', reverseLevel:r.reverseLevel||'', ts:new Date().toISOString()};
     if(action !== 'clear' && idx < rows.length - 1) idx++;
     render();
   }
@@ -119,9 +152,9 @@
     alert('No unpaired reverse candidates found.');
   }
   function exportTSV(){
-    const header = 'level\tid\taction';
+    const header = 'level\tid\taction\treverseId\treverseLevel';
     const lines = [header];
-    rows.forEach(r => { const d = decisions[r.id]; if(d) lines.push([r.level,r.id,d.action].join('\t')); });
+    rows.forEach(r => { const d = decisions[r.id]; if(d) lines.push([r.level,r.id,d.action,d.reverseId||r.reverseId||'',d.reverseLevel||r.reverseLevel||''].join('\t')); });
     const text = lines.join('\n') + '\n';
     $('exportText').value = text;
     $('exportBox').classList.add('show');
