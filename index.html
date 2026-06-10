@@ -21,9 +21,6 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="top">
-    <div class="bar"><div class="pill" id="where">Level</div><div class="pill" id="counts">0 decided</div></div>
-  </div>
   <div class="card info-card">
     <div class="level" id="level"></div>
     <div class="puzzle" id="puzzle"></div>
@@ -43,6 +40,7 @@
       <button class="danger" data-action="remove">Remove</button>
       <button class="danger" data-action="overflow">Overflow</button>
       <button data-action="clear">Clear decision</button>
+      <button id="unpairedBtnTop" type="button">Next unpaired</button>
     </div>
   </div>
   <div class="card">
@@ -52,8 +50,6 @@
       <button id="nextBtn">Next →</button>
     </div>
     <div class="tools">
-      <button id="undecidedBtn">Next undecided</button>
-      <button id="unpairedBtn">Next unpaired</button>
       <button id="copyBtn">Copy TSV</button>
       <button id="clearAllBtn">Clear all</button>
     </div>
@@ -81,8 +77,6 @@
     if(!rows.length){ $('level').textContent='No rows loaded'; return; }
     const r = rows[idx];
     const d = decisions[r.id];
-    $('where').textContent = 'Level ' + r.level + ' / ' + rows.length;
-    $('counts').textContent = countDecided() + ' decided';
     $('level').textContent = 'Level ' + r.level + ':';
     $('puzzle').innerHTML = '<span>'+up(r.word1)+' '+up(r.word2)+'</span> <span class="arrow">›</span> <span>'+up(r.answer1)+' '+up(r.answer2)+'</span>';
     $('stats').textContent = 'minMoves ' + r.minMoves + ' diff ' + r.difficulty + ' · uniq ' + r.uniqScore + ' (' + r.pairMax + '/' + r.pairSum + ') · ' + r.category;
@@ -122,8 +116,7 @@
   $('backBtn').addEventListener('click', () => { idx=Math.max(0,idx-1); render(); });
   $('nextBtn').addEventListener('click', () => { idx=Math.min(rows.length-1,idx+1); render(); });
   $('jumpInput').addEventListener('change', () => { const n=parseInt($('jumpInput').value,10); if(n>=1&&n<=rows.length){ idx=n-1; render(); }});
-  $('undecidedBtn').addEventListener('click', nextUndecided);
-  $('unpairedBtn').addEventListener('click', nextUnpaired);
+  $('unpairedBtnTop').addEventListener('click', nextUnpaired);
   $('copyBtn').addEventListener('click', async () => { const text=exportTSV(); try{ await navigator.clipboard.writeText(text); alert('Copied TSV'); }catch(e){ $('exportText').focus(); $('exportText').select(); } });
   $('clearAllBtn').addEventListener('click', () => { if(confirm('Clear all phone decisions for this pack?')){ decisions={}; save(); render(); }});
   render();
