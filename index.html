@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>FlipWords phone review Big time</title>
+<title>FlipWords phone review</title>
 <style>
   :root{--bg:#faf9ff;--card:#fff;--ink:#22223a;--muted:#6f6b80;--line:#e3dff3;--purple:#8c52ff;--soft:#f0ebff;--bad:#ffe8ec;--ok:#e8f5ee;--warn:#fff5d9;}
   *{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);}
@@ -17,7 +17,7 @@
   .level{font-weight:800;font-size:19px;margin-bottom:8px}.puzzle{font-size:25px;font-weight:850;letter-spacing:.04em;line-height:1.25;margin:8px 0;text-align:center}.puzzle span{white-space:nowrap}.arrow{color:var(--purple);font-weight:900;margin:0 4px}.flags{font-size:13px;color:#4e4770;line-height:1.32;margin-top:8px;font-weight:650}.stats{font-size:14px;color:var(--muted);line-height:1.35;margin-top:10px}.reverse{font-size:14px;color:var(--muted);line-height:1.35;margin-top:6px}.decision{font-size:13px;color:var(--purple);font-weight:700;margin-top:7px;min-height:18px}.hint{font-size:12px;color:var(--muted);line-height:1.3;margin-top:5px;}
   button{font-family:inherit}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.actions button,.nav button,.tools button,.wordTools button{font-size:15px;font-weight:750;border:1px solid var(--line);border-radius:14px;background:white;color:var(--ink);padding:12px 9px}.actions button.primary,.wordTools button.primary{background:var(--soft);border-color:#d7c8ff}.actions button.danger,.wordTools button.danger{background:var(--bad)}.actions button.ok{background:var(--ok)}.actions button.warn{background:var(--warn)}button:disabled{opacity:.38;filter:grayscale(1);background:#f2f2f4!important;color:#8b8994!important;border-color:#ddd!important;box-shadow:none!important}
   .nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}.nav input{min-width:0;border:1px solid var(--line);border-radius:14px;padding:12px;font-size:16px;text-align:center;background:white}.tools{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.small{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.35}.export{display:none;margin-top:14px}.export textarea{width:100%;height:180px;border:1px solid var(--line);border-radius:14px;padding:10px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}.show{display:block}.hidden{display:none!important}
-  .wordHead{display:flex;align-items:center;gap:8px;justify-content:space-between;margin-bottom:10px}.wordTitle{font-size:17px;font-weight:850;line-height:1.25}.wordSub{font-size:12px;color:var(--muted);line-height:1.35;margin-top:4px}.wordNav{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.wordNav button{font-size:14px;font-weight:800;border:1px solid var(--line);border-radius:14px;background:#fff;padding:10px}.wordSelect{width:100%;border:1px solid var(--line);border-radius:14px;background:#fff;padding:11px;font-size:15px;margin-top:10px}.chart{height:54px;display:grid;grid-template-columns:repeat(100,1fr);gap:1px;align-items:end;margin:12px 0 8px;padding:6px 4px;border:1px solid var(--line);border-radius:12px;background:#fbfaff}.barbit{background:#bca7ff;border-radius:2px 2px 0 0;min-height:1px}.pairs{font-size:12px;color:var(--muted);line-height:1.35;margin-top:5px}.wordList{display:flex;flex-direction:column;gap:8px;margin-top:12px}.wordRow{border:1px solid var(--line);border-radius:14px;background:white;padding:10px 10px 9px;display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:start}.wordRow input{width:20px;height:20px;margin-top:2px}.wordRowPuzzle{font-size:16px;font-weight:850;letter-spacing:.03em;line-height:1.3}.wordRowMeta{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.3}.lowUniq{color:#a65a00;font-weight:800}.wordTools{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.wordCount{font-size:12px;color:var(--muted);font-weight:700;margin-top:6px;min-height:16px}.empty{font-size:14px;color:var(--muted);padding:12px 0}.bulkSticky{position:sticky;bottom:0;background:rgba(250,249,255,.96);backdrop-filter:blur(8px);padding:9px 0 0;border-top:1px solid var(--line);margin-top:12px}
+  .wordHead{display:flex;align-items:center;gap:8px;justify-content:space-between;margin-bottom:10px}.wordTitle{font-size:17px;font-weight:850;line-height:1.25}.wordSub{font-size:12px;color:var(--muted);line-height:1.35;margin-top:4px}.wordNav{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.wordNav button{font-size:14px;font-weight:800;border:1px solid var(--line);border-radius:14px;background:#fff;padding:10px}.wordSelect{width:100%;border:1px solid var(--line);border-radius:14px;background:#fff;padding:11px;font-size:15px;margin-top:10px}.pairs{font-size:12px;color:var(--muted);line-height:1.35;margin-top:9px}.wordList{display:flex;flex-direction:column;gap:8px;margin-top:12px}.wordRow{border:1px solid var(--line);border-radius:14px;background:white;padding:10px 10px 9px;display:grid;grid-template-columns:30px 1fr;gap:8px;align-items:start}.wordRow:has(input:checked){background:var(--soft)!important;border-color:#d7c8ff}.wordRow input{width:21px;height:21px;margin-top:2px}.wordRowPuzzle{font-size:16px;font-weight:850;letter-spacing:.03em;line-height:1.3}.wordRowMeta{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.3}.lowUniq{color:#a65a00;font-weight:800}.wordTools{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.wordCount{font-size:12px;color:var(--muted);font-weight:700;margin-top:6px;min-height:16px}.empty{font-size:14px;color:var(--muted);padding:12px 0}.bulkSticky{position:sticky;bottom:0;background:rgba(250,249,255,.96);backdrop-filter:blur(8px);padding:9px 0 0;border-top:1px solid var(--line);margin-top:12px}
 </style>
 </head>
 <body>
@@ -58,9 +58,8 @@
       <div class="wordHead"><div><div class="wordTitle" id="wordTitle"></div><div class="wordSub" id="wordSub"></div></div><div class="pill" id="wordPos"></div></div>
       <select class="wordSelect" id="wordSelect"></select>
       <div class="wordNav"><button id="prevWordBtn" type="button">Previous word</button><button id="nextWordBtn" type="button">Next word</button></div>
-      <div class="chart" id="wordChart"></div>
       <div class="pairs" id="wordPairs"></div>
-      <div class="wordTools"><button id="selectAllBtn" type="button">Select visible</button><button id="selectNoneBtn" type="button">Clear selection</button></div>
+      <div class="wordTools"><button id="selectAllBtn" type="button">Select all shown</button><button id="selectNoneBtn" type="button">Clear selection</button></div>
       <div class="wordCount" id="wordCount"></div>
       <div class="wordList" id="wordList"></div>
       <div class="bulkSticky"><div class="wordTools"><button class="danger" id="bulkRemoveBtn" type="button">Remove selected</button><button class="primary" id="bulkFlipBtn" type="button">Flip selected</button></div></div>
@@ -69,13 +68,13 @@
 
   <div class="export" id="exportBox"><textarea id="exportText" spellcheck="false"></textarea><div class="small">Copy this TSV into Mode 33.</div></div>
 </div>
-<script src="mode32_phone_review_data.js"></script>
+<script src="mode32_phone_review_data.js?v=207"></script>
 <script>
 (function(){
   const payload = window.FLIPWORDS_PHONE_REVIEW_DATA || {};
   const rows = payload.rows || [];
   const groups = payload.wordGroups || [];
-  const key = 'flipwords_phone_review_v4_' + (payload.dataKey || 'default');
+  const key = 'flipwords_phone_review_v6_words_' + (payload.dataKey || 'default');
   let state = {idx:0, wordIdx:0, decisions:{}, selected:{}};
   try{ state = Object.assign(state, JSON.parse(localStorage.getItem(key) || '{}')); }catch(e){}
   let idx = Math.min(Math.max(0, state.idx||0), Math.max(0, rows.length-1));
@@ -132,10 +131,23 @@
     $('wordSelect').innerHTML = groups.map((g,i) => `<option value="${i}">${esc(g.label || g.id)}</option>`).join('');
     $('wordSelect').value = String(wordIdx);
   }
-  function renderChart(g){
-    const vals = (g && g.distribution) || [];
-    const max = Math.max(1, ...vals);
-    $('wordChart').innerHTML = vals.map((v,i) => `<div class="barbit" title="${i*100+1}-${i*100+100}: ${v}" style="height:${Math.max(1, Math.round((v/max)*44))}px"></div>`).join('');
+  function rowGapMap(list){
+    const sorted = [...list].sort((a,b)=>(a.level||0)-(b.level||0));
+    const out = {};
+    sorted.forEach((r,i) => {
+      const prev = i>0 ? Math.abs((r.level||0)-(sorted[i-1].level||0)) : Infinity;
+      const next = i<sorted.length-1 ? Math.abs((sorted[i+1].level||0)-(r.level||0)) : Infinity;
+      const gap = Math.min(prev,next);
+      out[r.id] = Number.isFinite(gap) ? gap : 9999;
+    });
+    return out;
+  }
+  function rowBg(gap){
+    if(gap <= 25) return 'background:#ffd8d8';
+    if(gap <= 50) return 'background:#ffe3e3';
+    if(gap <= 100) return 'background:#ffeeee';
+    if(gap <= 200) return 'background:#fff6f6';
+    return '';
   }
   function renderWords(){
     if(!groups.length){ $('packInfo').textContent='Words mode'; $('wordTitle').textContent='No word groups'; $('wordSub').textContent=''; $('wordList').innerHTML='<div class="empty">No flagged word groups.</div>'; return; }
@@ -144,14 +156,17 @@
     const visibleRows = activeGroupRows(g);
     $('packInfo').textContent = 'Words mode';
     $('wordPos').textContent = `${wordIdx+1} / ${groups.length}`;
-    $('wordTitle').textContent = g.label || '';
-    $('wordSub').textContent = `${visibleRows.length} remaining`;
-    renderGroupOptions(); renderChart(g);
-    $('wordPairs').textContent = (g.pairs && g.pairs.length) ? ('Pairs: ' + g.pairs.join(' · ')) : '';
+    $('wordTitle').innerHTML = `${esc(g.title || g.key || '')}<br>${visibleRows.length} remaining`;
+    $('wordSub').textContent = '';
+    renderGroupOptions();
+    $('wordPairs').textContent = (g.pairs && g.pairs.length) ? ('Direct pairs: ' + g.pairs.join(' · ')) : '';
     const sel = selected[g.id] || {};
+    const gaps = rowGapMap(visibleRows);
     $('wordList').innerHTML = visibleRows.length ? visibleRows.map(r => {
       const checked = sel[r.id] ? 'checked' : '';
-      return `<label class="wordRow"><input type="checkbox" data-word-row="${esc(r.id)}" ${checked}><div><div class="wordRowMeta">Level ${esc(r.level)}</div>${puzzleHTML(r,true)}<div class="wordRowMeta">${rowMeta(r)}</div></div></label>`;
+      const gap = gaps[r.id] || 9999;
+      const style = rowBg(gap);
+      return `<label class="wordRow" style="${style}"><input type="checkbox" data-word-row="${esc(r.id)}" ${checked}><div><div class="wordRowMeta">Level ${esc(r.level)}</div>${puzzleHTML(r,true)}<div class="wordRowMeta">${rowMeta(r)}</div></div></label>`;
     }).join('') : '<div class="empty">No remaining rows for this word.</div>';
     document.querySelectorAll('[data-word-row]').forEach(cb => cb.addEventListener('change', () => { const s = selected[g.id] || {}; if(cb.checked) s[cb.dataset.wordRow]=true; else delete s[cb.dataset.wordRow]; selected[g.id]=s; save(); updateWordCount(); }));
     updateWordCount(); updateDecisionInfo();
